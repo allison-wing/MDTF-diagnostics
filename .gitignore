@@ -1,6 +1,3 @@
-# custom ignore
-diagnostics/etc_composites/
-
 # Output files specific to this project
 envs/
 wkdir/
