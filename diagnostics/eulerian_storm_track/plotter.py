@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Importing Python packages to create plots
 import matplotlib.pyplot as plt
 # from mpl_toolkits.basemap import Basemap, maskoceans, shiftgrid

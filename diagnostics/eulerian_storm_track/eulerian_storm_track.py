@@ -28,23 +28,6 @@ if (len(glob.glob(os.environ['MODEL_OUTPUT_DIR']+'/'+os.environ['v850_file']))==
 if (missing_file == 1):
   print('MISSING FILES: Eulerian Strom Tracker will NOT be executed!')
 else:
-  ##########################################################
-  # Create the necessary directories
-  ##########################################################
-
-  if not os.path.exists(os.environ['WK_DIR']+'/model'):
-    os.makedirs(os.environ['WK_DIR']+'/model')
-  if not os.path.exists(os.environ['WK_DIR']+'/model/netCDF'):
-    os.makedirs(os.environ['WK_DIR']+'/model/netCDF')
-  if not os.path.exists(os.environ['WK_DIR']+'/model/PS'):
-    os.makedirs(os.environ['WK_DIR']+'/model/PS')
-  if not os.path.exists(os.environ['WK_DIR']+'/obs'):
-    os.makedirs(os.environ['WK_DIR']+'/obs')
-  if not os.path.exists(os.environ['WK_DIR']+'/obs/netCDF'):
-    os.makedirs(os.environ['WK_DIR']+'/obs/netCDF')
-  if not os.path.exists(os.environ['WK_DIR']+'/obs/PS'):
-    os.makedirs(os.environ['WK_DIR']+'/obs/PS')
-  
   ##################################################################
   # Reading in the necessary data, and computing the daily eddies
   ##################################################################
@@ -53,21 +36,15 @@ else:
   if (not os.path.exists(netcdf_filename)):
     print ('Cannot Find File: ', netcdf_filename)
 
-  # temporarily add the lat_var and lon_var 
-  # since these values seem to be missing 
-  os.environ['lat_var'] = 'lat'
-  os.environ['lon_var'] = 'lon'
-  os.environ['time_var'] = 'time'
-
   # reading in the model data
   ncid = Dataset(netcdf_filename, 'r')
-  lat = ncid.variables[os.environ['lat_var']][:]
+  lat = ncid.variables[os.environ['lat_coord']][:]
   lat.fill_value = np.nan
   lat = lat.filled()
-  lon = ncid.variables[os.environ['lon_var']][:]
+  lon = ncid.variables[os.environ['lon_coord']][:]
   lon.fill_value = np.nan
   lon = lon.filled()
-  time = ncid.variables[os.environ['time_var']][:]
+  time = ncid.variables[os.environ['time_coord']][:]
   time.fill_value = np.nan
   time = time.filled()
   v850 = ncid.variables[os.environ['v850_var']][:]
@@ -178,34 +155,7 @@ else:
   print('*** Plotting Zonal Means Image')
   out_file = os.environ['WK_DIR']+'/%s.zonal_means.png'%(os.environ['CASENAME'])
   plotter.plot_zonal(model_zonal_means, erai_zonal_means, era5_zonal_means, out_file)
-
-  ##########################################################
-  # Editting HTML Template for the current CASENAME
-  ##########################################################
-
-  print('*** Editting Templates...')
-  # Copy template html (and delete old html if necessary)
-  if os.path.isfile( os.environ["WK_DIR"]+"/eulerian_storm_track.html" ):
-      os.system("rm -f "+os.environ["WK_DIR"]+"/eulerian_storm_track.html")
-
-  cmd = "cp "+os.environ["POD_HOME"]+"/eulerian_storm_track.html "+os.environ["WK_DIR"]+"/"
-  os.system(cmd)
-  cmd = "cp "+os.environ["POD_HOME"]+"/doc/MDTF_Documentation_eulerian_storm_track.pdf "+os.environ["WK_DIR"]+"/"
-  os.system(cmd)
-
-  # # Replace CASENAME so that the figures are correctly linked through the html
-  # os.system("cp "+os.environ["WK_DIR"]+"/eulerian_storm_track.html "+os.environ["WK_DIR"]+"/tmp.html")
-  # os.system("cat "+os.environ["WK_DIR"]+"/eulerian_storm_track.html "+"| sed -e s/casename/"+os.environ["CASENAME"]+"/g > "+os.environ["WK_DIR"]+"/tmp.html")
-  # os.system("cp "+os.environ["WK_DIR"]+"/tmp.html "+os.environ["WK_DIR"]+"/eulerian_storm_track.html")
-  # os.system("rm -f "+os.environ["WK_DIR"]+"/tmp.html")
-
-  # a = os.system("cat "+os.environ["WK_DIR"]+"/index.html | grep eulerian_storm_track > /dev/null")
-  # if a != 0:
-  #    os.system("echo '<H3><font color=navy>Eulerian Strom Track Diagnostics <A HREF=\"eulerian_storm_track/eulerian_storm_track.html\">plots</A></H3>' >> "+os.environ["WK_DIR"]+"/index.html")
-
-  # ======================================================================
-  # End of HTML sections
-  # ======================================================================    
+  
 
   print("*****************************************************************************")
   print("Eulerian Storm Track Diagnostic Package (eulerian_storm_track.py) Executed!")

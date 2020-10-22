@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 ############# EULERIAN STROM TRACKER ############
 ############# Necessary Functions ###############
 ###### Created by: Jeyavinoth Jeyaratnam     ####
