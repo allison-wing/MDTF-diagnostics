@@ -15,13 +15,13 @@ def boxavg(thing,lat,lon):
     return average
 
 #Lats/Lons
-latres = np.float(os.getenv("latres"))
-lonres = np.float(os.getenv("lonres"))
+latres = float(os.getenv("latres"))
+lonres = float(os.getenv("lonres"))
 lats = np.arange(-5,5+latres,latres)
 lons = np.arange(-5,5+lonres,lonres)
 #Gather the years that were inputted by user
-FIRST_YR = np.int(os.getenv("FIRSTYR"))
-LAST_YR = np.int(os.getenv("LASTYR"))
+FIRST_YR = int(os.getenv("FIRSTYR"))
+LAST_YR = int(os.getenv("LASTYR"))
 ds_all = []
 
 for y in range(FIRST_YR,LAST_YR+1):

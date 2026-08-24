@@ -8,8 +8,8 @@ from scipy import interpolate
 
 #Input of the specific model's lat/lon resolution or grid spacing (degrees) and name of model being run
 modelname = str(os.getenv("modelname"))
-latres = np.float(os.getenv("latres"))
-lonres = np.float(os.getenv("lonres"))
+latres = float(os.getenv("latres"))
+lonres = float(os.getenv("lonres"))
 
 ############### PLOTTING OF MODEL AND REANALYSIS COMPOSITES TOGETHER ###########################################################################
 

@@ -15,13 +15,13 @@ def boxavg(thing,lat,lon):
 
 ############################READING IN TRACK DATA######################################################
 #Give the start and end year of track data 
-start_year = np.int(os.getenv("FIRSTYR"))
-end_year = np.int(os.getenv("LASTYR"))
+start_year = int(os.getenv("FIRSTYR"))
+end_year = int(os.getenv("LASTYR"))
 
 #Input of the specific model's lat/lon resolution or grid spacing (degrees) and name of model being run
 modelname = str(os.getenv("modelname"))
-latres = np.float(os.getenv("latres"))
-lonres = np.float(os.getenv("lonres"))
+latres = float(os.getenv("latres"))
+lonres = float(os.getenv("lonres"))
 
 #Getting track data, it is currently set up to read in a .txt file, this function will need to be changed
 #if your model track data is not in the same format as this .txt file.
