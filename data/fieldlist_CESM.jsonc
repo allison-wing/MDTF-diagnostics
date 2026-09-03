@@ -278,18 +278,27 @@
     },
     "FSNS": {
       "standard_name": "net_solar_flux_at_surface",
+      "realm": "atmos",
       "units": "W m-2",
       "ndim": 3
     },
    "FLNS": {
       "standard_name": "net_longwave_flux_at_surface",
+      "realm": "atmos",
       "units": "W m-2",
       "ndim": 3
     },
     "FLNSC": {
       "standard_name": "clearsky_net_longwave_flux_at_surface",
+      "realm": "atmos",
       "units": "W m-2",
       "ndim": 3
+    },
+    "LANDFRAC": {
+      "standard_name": "land_area_fraction",
+      "realm": "atmos",
+      "units": "fraction",
+      "ndim": 2
     },
     "FSDS": {
       "standard_name": "downwelling_solar_flux_at_surface",
@@ -303,6 +312,7 @@
     },
     "FLUTC": {
       "standard_name": "clearsky_upwelling_longwave_flux_at_top_of_model",
+      "realm": "atmos",
       "units": "W m-2",
       "ndim": 3
     },
@@ -313,6 +323,7 @@
     },
     "FSNSC": {
       "standard_name": "clearsky_net_solar_flux_at_surface",
+      "realm": "atmos",
       "units": "W m-2",
       "ndim": 3
     },
@@ -323,6 +334,7 @@
     },
     "FSNTOA": {
       "standard_name": "net_solar_flux_at_top_of_atmosphere",
+      "realm": "atmos",
       "units": "W m-2",
       "ndim": 3
     }, 
@@ -333,6 +345,7 @@
     },  
     "FSNTOAC": {
       "standard_name": "clearsky_net_solar_flux_at_top_of_atmosphere",
+      "realm": "atmos",
       "units": "W m-2",
       "ndim": 3
     },
