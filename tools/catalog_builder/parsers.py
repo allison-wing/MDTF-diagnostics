@@ -310,3 +310,86 @@ def parse_cesm(file_name: str):
             new_catalog.update({'realm': var_metadata['realm']})
 
     return new_catalog
+
+
+# custom parser for single time-slice CESM output files named <case>.<variable>.<frequency>.nc
+# with no embedded date range (e.g., cesm_mdtfv3_timeslice.T.1hrPt.nc). This DRS mixes native
+# CESM/CAM variable names with a CMIP6-style frequency suffix (e.g. 'Pt' for instantaneous
+# sampling) instead of a CESM history stream (h0, h1, ...), so neither the stock
+# parse_cesm_timeseries (expects a stream + date range) nor a CMIP6 parser (expects CMIP
+# variable_ids) can handle it. parse_nc_file/parse_cesm can also mis-identify the variable
+# when the file contains multiple variables with a long_name attribute (e.g., P0, hyam), so
+# the variable is taken directly from the file name instead.
+def parse_cesm_mdtfv3_timeslice(file_name: str):
+    catalog_info = setup_catalog()
+    file = pathlib.Path(file_name)
+    catalog_info.update({"path": str(file)})
+    catalog_info.update({"activity_id": "CESM"})
+    catalog_info.update({"institution_id": "NCAR"})
+
+    # case name may itself contain dots, so take variable/frequency from the end of the stem
+    stem_parts = file.stem.split('.')
+    if len(stem_parts) < 3:
+        return {INVALID_ASSET: file,
+                TRACEBACK: f"{file.name} does not match the <case>.<variable>.<frequency>.nc convention"}
+
+    frequency = stem_parts[-1]
+    variable_id = stem_parts[-2]
+    # strip the 'Pt' (instantaneous, as opposed to time-averaged) suffix so frequency
+    # matches values recognized by util.datelabel.DateFrequency (e.g., '1hrPt' -> '1hr'),
+    # and downstream catalog queries built by src/data_sources.py, which never add 'Pt'
+    is_instantaneous = frequency.endswith('Pt')
+    if is_instantaneous:
+        frequency = frequency[:-2]
+    catalog_info.update({"variable_id": variable_id, "frequency": frequency})
+
+    try:
+        with xr.open_dataset(file, chunks={}, decode_times=False, engine="netcdf4") as ds:
+            if variable_id not in ds.variables:
+                raise KeyError(f"{variable_id} not found in {file}")
+            var_attrs = ds[variable_id].attrs
+            catalog_info.update({
+                "units": var_attrs.get('units', ''),
+                "long_name": var_attrs.get('long_name', ''),
+                "standard_name": var_attrs.get('standard_name', ''),
+                "experiment_id": ds.attrs.get('case', '')
+            })
+            if 'time' in ds.coords:
+                time_var = ds.coords['time']
+                calendar = time_var.attrs.get('calendar')
+                if calendar == 'no_leap':
+                    calendar = 'noleap'
+                start_time = cftime.num2date(time_var.values[0], time_var.attrs['units'], calendar=calendar)
+                end_time = cftime.num2date(time_var.values[-1], time_var.attrs['units'], calendar=calendar)
+                catalog_info.update({
+                    'time_range': start_time.strftime("%Y%m%d:%H%M%S") + '-' + end_time.strftime("%Y%m%d:%H%M%S")
+                })
+    except Exception as exc:
+        print(exc)
+        return {INVALID_ASSET: file, TRACEBACK: traceback.format_exc()}
+
+    # preserve the instantaneous-vs-time-averaged distinction carried by the 'Pt' suffix,
+    # since it was stripped from the frequency column above
+    if not catalog_info.get('cell_methods'):
+        catalog_info.update({'cell_methods': 'time: point' if is_instantaneous else 'time: mean'})
+
+    # fill in metadata missing from the file itself from the CESM fieldlist
+    cesm_fieldlist = os.path.join(ROOT_DIR, 'data/fieldlist_CESM.jsonc')
+    try:
+        cesm_info = read_json(cesm_fieldlist, log=_log)
+    except IOError:
+        print("Unable to open file", cesm_fieldlist)
+        sys.exit(1)
+
+    units = catalog_info.get('units')
+    if units:
+        catalog_info.update({'units': units.replace('/s', ' s-1').replace('/m2', ' m-2')})
+
+    var_metadata = cesm_info['variables'].get(variable_id, None)
+    if var_metadata is not None:
+        if not catalog_info.get('standard_name') and var_metadata.get('standard_name', None) is not None:
+            catalog_info.update({'standard_name': var_metadata['standard_name']})
+        if var_metadata.get('realm', None) is not None:
+            catalog_info.update({'realm': var_metadata['realm']})
+
+    return catalog_info
