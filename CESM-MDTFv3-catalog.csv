@@ -1,0 +1,25 @@
+component,stream,case,variable_id,variable,frequency,long_name,units,path
+atm,1hr,cesm_mdtfv3_timeslice,FLNS,FLNS,1hr,Net longwave flux at surface,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/1hr/cesm_mdtfv3_timeslice.FLNS.1hr.nc
+atm,1hr,cesm_mdtfv3_timeslice,FLNSC,FLNSC,1hr,Clearsky net longwave flux at surface,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/1hr/cesm_mdtfv3_timeslice.FLNSC.1hr.nc
+atm,1hr,cesm_mdtfv3_timeslice,FLUT,FLUT,1hr,Upwelling longwave flux at top of model,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/1hr/cesm_mdtfv3_timeslice.FLUT.1hr.nc
+atm,1hr,cesm_mdtfv3_timeslice,FLUTC,FLUTC,1hr,Clearsky upwelling longwave flux at top of model,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/1hr/cesm_mdtfv3_timeslice.FLUTC.1hr.nc
+atm,1hr,cesm_mdtfv3_timeslice,FSNS,FSNS,1hr,Net solar flux at surface,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/1hr/cesm_mdtfv3_timeslice.FSNS.1hr.nc
+atm,1hr,cesm_mdtfv3_timeslice,FSNSC,FSNSC,1hr,Clearsky net solar flux at surface,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/1hr/cesm_mdtfv3_timeslice.FSNSC.1hr.nc
+atm,1hr,cesm_mdtfv3_timeslice,FSNTOA,FSNTOA,1hr,Net solar flux at top of atmosphere,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/1hr/cesm_mdtfv3_timeslice.FSNTOA.1hr.nc
+atm,1hr,cesm_mdtfv3_timeslice,FSNTOAC,FSNTOAC,1hr,Clearsky net solar flux at top of atmosphere,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/1hr/cesm_mdtfv3_timeslice.FSNTOAC.1hr.nc
+atm,1hr,cesm_mdtfv3_timeslice,LHFLX,LHFLX,1hr,Surface latent heat flux,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/1hr/cesm_mdtfv3_timeslice.LHFLX.1hr.nc
+atm,1hr,cesm_mdtfv3_timeslice,Q,Q,1hr,Specific humidity,kg/kg,/huracan/tank4/cornell/GCM/CESM-MDTFv3/1hr/cesm_mdtfv3_timeslice.Q.1hrPt.nc
+atm,1hr,cesm_mdtfv3_timeslice,SHFLX,SHFLX,1hr,Surface sensible heat flux,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/1hr/cesm_mdtfv3_timeslice.SHFLX.1hr.nc
+atm,1hr,cesm_mdtfv3_timeslice,T,T,1hr,Temperature,K,/huracan/tank4/cornell/GCM/CESM-MDTFv3/1hr/cesm_mdtfv3_timeslice.T.1hrPt.nc
+atm,1hr,cesm_mdtfv3_timeslice,Z3,Z3,1hr,Geopotential Height (above sea level),m,/huracan/tank4/cornell/GCM/CESM-MDTFv3/1hr/cesm_mdtfv3_timeslice.Z3.1hrPt.nc
+atm,6hr,cesm_mdtfv3_timeslice,FLNS,FLNS,6hr,Net longwave flux at surface,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/6hr/cesm_mdtfv3_timeslice.FLNS.6hr.nc
+atm,6hr,cesm_mdtfv3_timeslice,FLNSC,FLNSC,6hr,Clearsky net longwave flux at surface,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/6hr/cesm_mdtfv3_timeslice.FLNSC.6hr.nc
+atm,6hr,cesm_mdtfv3_timeslice,FSNS,FSNS,6hr,Net solar flux at surface,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/6hr/cesm_mdtfv3_timeslice.FSNS.6hr.nc
+atm,6hr,cesm_mdtfv3_timeslice,FSNSC,FSNSC,6hr,Clearsky net solar flux at surface,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/6hr/cesm_mdtfv3_timeslice.FSNSC.6hr.nc
+atm,6hr,cesm_mdtfv3_timeslice,FSNTOA,FSNTOA,6hr,Net solar flux at top of atmosphere,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/6hr/cesm_mdtfv3_timeslice.FSNTOA.6hr.nc
+atm,6hr,cesm_mdtfv3_timeslice,LHFLX,LHFLX,6hr,Surface latent heat flux,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/6hr/cesm_mdtfv3_timeslice.LHFLX.6hr.nc
+atm,6hr,cesm_mdtfv3_timeslice,Q,Q,6hr,Specific humidity,kg/kg,/huracan/tank4/cornell/GCM/CESM-MDTFv3/6hr/cesm_mdtfv3_timeslice.Q.6hrPt.nc
+atm,6hr,cesm_mdtfv3_timeslice,SHFLX,SHFLX,6hr,Surface sensible heat flux,W/m2,/huracan/tank4/cornell/GCM/CESM-MDTFv3/6hr/cesm_mdtfv3_timeslice.SHFLX.6hr.nc
+atm,6hr,cesm_mdtfv3_timeslice,T,T,6hr,Temperature,K,/huracan/tank4/cornell/GCM/CESM-MDTFv3/6hr/cesm_mdtfv3_timeslice.T.6hrPt.nc
+atm,6hr,cesm_mdtfv3_timeslice,Z3,Z3,6hr,Geopotential Height (above sea level),m,/huracan/tank4/cornell/GCM/CESM-MDTFv3/6hr/cesm_mdtfv3_timeslice.Z3.6hrPt.nc
+atm,CESM-MDTFv3,cesm_mdtfv3_timeslice,LANDFRAC,LANDFRAC,day,Fraction of sfc area covered by land,fraction,/huracan/tank4/cornell/GCM/CESM-MDTFv3/cesm_mdtfv3_timeslice.LANDFRAC.day.nc
