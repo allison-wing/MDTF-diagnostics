@@ -122,6 +122,45 @@ def parse_gfdl_pp_ts(file_name: str):
         return {INVALID_ASSET: file, TRACEBACK: traceback.format_exc()}
 
 
+# custom parser for single time-slice CESM output files named
+# <case>.<variable>.<frequency>.nc, i.e., no embedded date range
+def parse_cesm_mdtfv3_timeslice(file_name: str):
+    file = pathlib.Path(file_name)
+    try:
+        stem = file.stem
+        parts = stem.split('.')
+        case = parts[0]
+        variable_id = parts[1]
+        freq_label = parts[2].lower() if len(parts) > 2 else ''
+        if 'mon' in freq_label:
+            frequency = 'mon'
+        elif 'day' in freq_label:
+            frequency = 'day'
+        elif '6hr' in freq_label:
+            frequency = '6hr'
+        elif '1hr' in freq_label:
+            frequency = '1hr'
+        else:
+            frequency = freq_label
+
+        with xr.open_dataset(file, chunks={}, decode_times=False) as ds:
+            info = {
+                'component': 'atm',
+                'stream': file.parent.name,
+                'case': case,
+                'variable_id': variable_id,
+                'variable': variable_id,
+                'frequency': frequency,
+                'long_name': ds[variable_id].attrs.get('long_name'),
+                'units': ds[variable_id].attrs.get('units'),
+                'path': str(file)
+            }
+            return info
+
+    except Exception:
+        return {INVALID_ASSET: file, TRACEBACK: traceback.format_exc()}
+
+
 class CatalogBase(object):
     """Catalog base class\n
     """
@@ -256,7 +295,7 @@ class CatalogCESM(CatalogBase):
             {'type': 'union', 'attribute_name': 'variable_id'},
             {
                 'type': 'join_existing',
-                'attribute_name': 'date',
+                'attribute_name': 'time_range',
                 'options': {'dim': 'time', 'coords': 'minimal', 'compat': 'override'}
             }
         ]
@@ -266,7 +305,33 @@ class CatalogCESM(CatalogBase):
             file_parse_method = parse_cesm_timeseries
         # see https://github.com/ncar-xdev/ecgtools/blob/main/ecgtools/parsers/cesm.py
         # for more parsing methods
-        self.cb.build(file_parse_method)
+        self.cb = self.cb.build(parsing_func=file_parse_method)
+        print('Build complete')
+
+
+@catalog_class.maker
+class CatalogCESMMDTFV3(CatalogBase):
+    """Class to generate catalogs for single time-slice CESM output files
+    named <case>.<variable>.<frequency>.nc (no embedded date range)\n
+    """
+    def __init__(self):
+        super().__init__()
+        self.groupby_attrs = [
+            'component',
+            'stream',
+            'case',
+            'frequency'
+        ]
+
+        self.xarray_aggregations = [
+            {'type': 'union', 'attribute_name': 'variable_id'}
+        ]
+
+    def call_build(self, file_parse_method=None):
+        if file_parse_method is None:
+            file_parse_method = parse_cesm_mdtfv3_timeslice
+        self.cb = self.cb.build(parsing_func=file_parse_method)
+        print('Build complete')
 
 
 def load_config(config):
@@ -291,7 +356,8 @@ def main(config: str):
         # data_obj = parse_gfdl_pp_ts(p)  # debug custom parser
 
     # instantiate the builder class instance for the specified convention
-    cat_cls = catalog_class["Catalog" + conf['convention'].upper()]
+    # e.g. 'cesm-mdtfv3' -> 'CatalogCESMMDTFV3'
+    cat_cls = catalog_class["Catalog" + conf['convention'].upper().replace('-', '')]
     # initialize the catalog object
     cat_obj = cat_cls()
     # instantiate the esm catalog builder

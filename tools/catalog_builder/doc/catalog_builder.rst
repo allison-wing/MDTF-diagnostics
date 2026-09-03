@@ -58,7 +58,9 @@ Configuration file:
 ------------------
 The configuration file defines the following parameters to generate the ESM-intake catalog:
 
-- convention (required): DRS convention to use: cmip (default), gfdl, or cesm
+- convention (required): DRS convention to use: cmip (default), gfdl, cesm, or cesm-mdtfv3
+  (cesm-mdtfv3 is for single time-slice CESM output files named
+  <case>.<variable>.<frequency>.nc, i.e., no embedded date range)
 - data_root_dirs (required): a list of root directory paths with files to query
 - dir_depth (required): the directory depth to traverse in the paths.
   A dir_depth=1 means that the files are in the root directory(ies),
