@@ -223,6 +223,8 @@ def main(config: str):
             file_parse_method = parsers.parse_gfdl_am5_data
         elif 'timeslice' in conf['dataset_id'].lower():
             file_parse_method = parsers.parse_cesm_mdtfv3_timeslice
+        elif 'fregrid' in conf['dataset_id'].lower():
+            file_parse_method = parsers.parse_gfdl_fregrid_ts
 
     # build the catalog
     print('Building the catalog')
