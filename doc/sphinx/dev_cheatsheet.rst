@@ -57,6 +57,7 @@ Creating and submitting a POD
 
 Notes:
 ------
+
 - **Make sure that WORK_DIR and OUTPUT_DIR have enough space to hold data for your POD(s) AND any PODs included in the
   package.**
 - Defining POD variables
@@ -66,6 +67,7 @@ Notes:
         (e.g., "zg500" generates the ``${ENV_VAR}`` "zg500_var")
       - the standard name with a corresponding entry in the appropriate fieldlist file(s)  
       - variable units
+      - variable output frequency
       - variable dimensions (e.g., [time, lat, lon])
       - variable realm (e.g., atmos, ocean ice, land)
       - scalar coordinates for variables defined on a specific atmospheric pressure level (e.g. ``{"lev": 250}``

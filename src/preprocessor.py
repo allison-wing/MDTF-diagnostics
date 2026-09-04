@@ -16,7 +16,7 @@ import numpy as np
 import xarray as xr
 import collections
 import re
-import time
+
 
 # TODO: Make the following lines a unit test
 # import sys
@@ -30,6 +30,7 @@ import logging
 
 _log = logging.getLogger(__name__)
 write_times = []
+
 
 def copy_as_alternate(old_v, **kwargs):
     """Wrapper for :py:func:`dataclasses.replace` that creates a copy of an
@@ -67,6 +68,7 @@ class PreprocessorFunctionBase(abc.ABC):
       function is capable of converting into the format requested by the POD.
     - :meth:`process`, which actually implements the data format conversion.
     """
+
     def __init__(self, *args):
         """Called during Preprocessor's init."""
         pass
@@ -101,20 +103,20 @@ class PreprocessorFunctionBase(abc.ABC):
 class PercentConversionFunction(PreprocessorFunctionBase):
     """A PreprocessorFunction which convers the dependent variable's units and values,
     for the specific case of percentages. ``0-1`` are not defined in the UDUNITS-2
-    library. So, this function handles the case where we have to convert from 
+    library. So, this function handles the case where we have to convert from
     ``0-1`` to ``%``.
     """
-    
+
     _std_name_tuple = ('0-1', '%')
-    
+
     def execute(self, var, ds, **kwargs):
         var_unit = getattr(var, "units", "")
-        tv = var.translation #abbreviate
+        tv = var.translation  # abbreviate
         tv_unit = getattr(tv, "units", "")
         # 0-1 to %
         if str(tv_unit) == self._std_name_tuple[0] and str(var_unit) == self._std_name_tuple[1]:
             ds[tv.name].attrs['units'] = '%'
-            ds[tv.name].values = ds[tv.name].values*100
+            ds[tv.name].values = ds[tv.name].values * 100
             return ds
         # % to 0-1
         if str(tv_unit) == self._std_name_tuple[1] and str(var_unit) == self._std_name_tuple[0]:
@@ -123,10 +125,11 @@ class PercentConversionFunction(PreprocessorFunctionBase):
             if ds[tv.name].values[:, :, 3].max() < 1.5:
                 return ds
             else:
-                ds[tv.name].values = ds[tv.name].values/100
+                ds[tv.name].values = ds[tv.name].values / 100
                 return ds
 
         return ds
+
 
 class PrecipRateToFluxFunction(PreprocessorFunctionBase):
     """A PreprocessorFunction which converts the dependent variable's units, for
@@ -207,8 +210,8 @@ class PrecipRateToFluxFunction(PreprocessorFunctionBase):
                             v.full_name, exc, v_to_translate.standard_name)
                 return None
             v.alternates.append(v.translation)
-            #new_v = copy_as_alternate(v)
-            #new_v.translation = new_tv
+            # new_v = copy_as_alternate(v)
+            # new_v.translation = new_tv
             v.translation.name = new_tv.name
             v.translation.standard_name = new_tv.standard_name
             v.translation.units = new_tv.units
@@ -332,7 +335,7 @@ class RenameVariablesFunction(PreprocessorFunctionBase):
         tv = var.translation  # abbreviate
         rename_d = dict()
         # rename var
-        #if tv.name != var.name:
+        # if tv.name != var.name:
         #    var.log.debug("Rename '%s' variable in %s to '%s'.",
         #                  tv.name, var.full_name, var.name,
         #                  tags=util.ObjectLogTag.NC_HISTORY
@@ -842,22 +845,25 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
     def drop_attributes(self, xr_ds: xr.Dataset) -> xr.Dataset:
         """ Drop attributes that cause conflicts with xarray dataset merge"""
         drop_atts = ['average_T2',
-                     'time_bnds',
-                     'lat_bnds',
-                     'lon_bnds',
                      'average_DT',
                      'average_T1',
                      'height',
-                     'date']
+                     'date'
+                     ]
         # TODO: find a suitable answer to conflicts in xarray merging (i.e. nctoolkit)
         for att in drop_atts:
             if xr_ds.get(att, None) is not None:
+                # save attribute to restore to xarray written to pp file after xr_parser checks
+                self.parser.vars_backup[att] = xr_ds[att].copy()
                 xr_ds = xr_ds.drop_vars(att)
                 for coord in xr_ds.coords:
                     if 'bounds' in xr_ds[coord].attrs:
                         if xr_ds[coord].attrs['bounds'] == att:
+                            self.parser.attrs_backup[coord] = xr_ds[coord].attrs.copy()
                             del xr_ds[coord].attrs['bounds']
+
         return xr_ds
+
 
     def check_multichunk(self, group_df: pd.DataFrame, case_dr, log) -> pd.DataFrame:
         """Sort the files found by date, grabs the files whose 'chunk_freq' is the
@@ -885,12 +891,11 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
         return pd.DataFrame.from_dict(group_df).reset_index()
 
     def crop_date_range(self, case_date_range: util.DateRange, xr_ds, time_coord) -> xr.Dataset:
-        xr_ds = self.drop_attributes(xr_ds)
         xr_ds = xr.decode_cf(xr_ds,
                              decode_coords=True,  # parse coords attr
                              decode_times=True,
                              use_cftime=True  # use cftime instead of np.datetime6
-        )
+                             )
         cal = 'noleap'
         if 'calendar' in xr_ds[time_coord.name].attrs:
             cal = xr_ds[time_coord.name].attrs['calendar']
@@ -924,13 +929,17 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
         date_range_cf_start = self.cast_to_cftime(case_date_range.start.lower, cal)
         date_range_cf_end = self.cast_to_cftime(case_date_range.end.lower, cal)
 
+        # dataset has no overlap with the user-specified date range
         if ds_start < date_range_cf_start and ds_end < date_range_cf_start or \
-           ds_end > date_range_cf_end and ds_start > date_range_cf_end:
+                ds_end > date_range_cf_end and ds_start > date_range_cf_end:
             new_xr_ds = None
         # dataset falls entirely within user-specified date range
         elif ds_start >= date_range_cf_start and ds_end <= date_range_cf_end:
             new_xr_ds = xr_ds.sel({time_coord.name: slice(ds_start, ds_end)})
-        # dataset overlaps user-specified date range start
+        # dataset overlaps user-specified date range start (corrected)
+        elif ds_start <= date_range_cf_start <= ds_end <= date_range_cf_end:
+            new_xr_ds = xr_ds.sel({time_coord.name: slice(date_range_cf_start, ds_end)})
+        # dataset overlaps user-specified date range start (orig)
         elif date_range_cf_start < ds_start and \
                 date_range_cf_start <= ds_end <= date_range_cf_end:
             new_xr_ds = xr_ds.sel({time_coord.name: slice(date_range_cf_start, ds_end)})
@@ -938,8 +947,14 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
         elif date_range_cf_start < ds_start <= date_range_cf_end <= ds_end:
             new_xr_ds = xr_ds.sel({time_coord.name: slice(ds_start, date_range_cf_end)})
         # dataset contains all of requested date range
-        elif date_range_cf_start>=ds_start and date_range_cf_end<=ds_end:
+        elif date_range_cf_start >= ds_start and date_range_cf_end <= ds_end:
             new_xr_ds = xr_ds.sel({time_coord.name: slice(date_range_cf_start, date_range_cf_end)})
+        else:
+            print(f'ERROR: new_xr_ds is unset because of incompatibility of time:')
+            print(f'       Dataset   start: {ds_start=}')
+            print(f'       Dataset   end  : {ds_end=}')
+            print(f'       Requested start: {date_range_cf_start=}')
+            print(f'       Requested end  : {date_range_cf_end=}')
 
         return new_xr_ds
 
@@ -960,8 +975,8 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
             end_times = []
             for tr in df['time_range'].values:
                 tr = tr.replace(' ', '').replace('-', '').replace(':', '')
-                start_times.append(tr[0:len(tr)//2])
-                end_times.append(tr[len(tr)//2:])
+                start_times.append(tr[0:len(tr) // 2])
+                end_times.append(tr[len(tr) // 2:])
             df['start_time'] = pd.Series(start_times)
             df['end_time'] = pd.Series(end_times)
         else:
@@ -975,11 +990,11 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
                 # convert start_times to date_format for all files in query
                 df['start_time'] = start_time_vals
                 df['start_time'] = df['start_time'].apply(lambda x:
-                                                                      datetime.datetime.strptime(x, date_format))
+                                                          datetime.datetime.strptime(x, date_format))
                 # convert end_times to date_format for all files in query
                 df['end_time'] = end_time_vals
                 df['end_time'] = df['end_time'].apply(lambda x:
-                                                                datetime.datetime.strptime(x, date_format))
+                                                      datetime.datetime.strptime(x, date_format))
             # method throws ValueError if ranges aren't contiguous
             dates_df = df.loc[:, ['start_time', 'end_time']]
             date_range_vals = []
@@ -1005,10 +1020,10 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
                     ds_st = cat_row['start_time']
                     ds_et = cat_row['end_time']
                 # date range includes entire or part of dataset
-                if ds_st>=date_range.start.lower and ds_et<date_range.end.upper or \
-                        ds_st<date_range.end.lower and ds_et>=date_range.start.lower or \
+                if ds_st >= date_range.start.lower and ds_et < date_range.end.upper or \
+                        ds_st < date_range.end.lower and ds_et >= date_range.start.lower or \
                         ds_st <= date_range.end.lower < ds_et:
-                        return_df.append(cat_row)
+                    return_df.append(cat_row)
 
             return pd.DataFrame.from_dict(return_df)
         except ValueError:
@@ -1022,7 +1037,7 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
         return pd.DataFrame(columns=group_df.columns)
 
     def normalize_time_units(self, subset_dict: dict, time_coord, log=_log) -> dict:
-        """ 
+        """
         Some datasets will have the time units that are different in each individual file.
         This function updates each time unit to rely on the earliest year grabbed in the
         query stage.
@@ -1031,25 +1046,25 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
         """
 
         time_units = np.sort([subset_dict[f].time.units for f in list(subset_dict)])
-        tn = time_coord.name #abbreviate        
+        tn = time_coord.name  # abbreviate
 
         # assumes each dataset has the same calendar
         cal = 'noleap'
         if 'calendar' in subset_dict[list(subset_dict)[0]][tn].attrs:
             cal = subset_dict[list(subset_dict)[0]][tn].attrs['calendar']
         elif 'calendar' in subset_dict[list(subset_dict)[0]][tn].encoding:
-            cal = subset_dict[list(subset_dict)[0]][tn].encoding['calendar'] 
- 
-        if len(set(time_units)) > 1: # check if each dataset has the different time coord units
+            cal = subset_dict[list(subset_dict)[0]][tn].encoding['calendar']
+
+        if len(set(time_units)) > 1:  # check if each dataset has the different time coord units
             # check if time coord units are in the form "{unit} since {date}"
             # they can be different units as this function converts to the earliest case
             if all(["since" in u for u in time_units]):
-                start_unit = time_units[0].split(" ")[0] 
+                start_unit = time_units[0].split(" ")[0]
                 start_str = " ".join(time_units[0].split(" ")[2:])
                 start_cft = dl.str_to_cftime(
-                                start_str.replace(" ","").replace(":", "").replace("-", ""),
-                                calendar=cal
-                            )
+                    start_str.replace(" ", "").replace(":", "").replace("-", ""),
+                    calendar=cal
+                )
                 new_unit_str = f"{start_unit} since {start_str}"
 
                 # dictionary of how many seconds are in each time unit
@@ -1058,43 +1073,42 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
                     "minutes": 60.0,
                     "hours": 3600.0,
                     "days": 86400.0,
-                    "weeks": 604800.0, # these are rarer and vague cases (they could be problematic)
-                    "months": 2628000.0, # seconds in common year (365 days) / 12
-                    "years": 31536000.0 # common year (365 days)
+                    "weeks": 604800.0,  # these are rarer and vague cases (they could be problematic)
+                    "months": 2628000.0,  # seconds in common year (365 days) / 12
+                    "years": 31536000.0  # common year (365 days)
                 }
-
 
                 for f in list(subset_dict):
                     current_unit = subset_dict[f][time_coord.name].units.split(" ")[0].lower()
                     current_str = " ".join(subset_dict[f][tn].units.split(" ")[2:])
                     current_cft = dl.str_to_cftime(
-                                  current_str.replace(" ","").replace(":", "").replace("-", ""),
-                                  calendar=cal
-                                  )
+                        current_str.replace(" ", "").replace(":", "").replace("-", ""),
+                        calendar=cal
+                    )
 
-                    #TODO: add logic to add year values for different calendars
-        
+                    # TODO: add logic to add year values for different calendars
+
                     if current_cft > start_cft:
                         # get difference between current files unit reference point and earliest found
-                        diff = ((current_cft-start_cft).total_seconds())/seconds_in[start_unit] 
+                        diff = ((current_cft - start_cft).total_seconds()) / seconds_in[start_unit]
 
                         subset_dict[f].coords['time'] = subset_dict[f][tn].assign_attrs(
                             units=new_unit_str
                         )
-                        
+
                         # convert current unit if it is not the same as the earliest reference
                         if current_unit != start_unit:
-                             factor = seconds_in[current_unit]/seconds_in[start_unit]
+                            factor = seconds_in[current_unit] / seconds_in[start_unit]
                         else:
                             factor = 1.0
-                        
+
                         # change the values in the dataset
                         for i, v in enumerate(subset_dict[f][tn].values):
-                            subset_dict[f].coords[tn].values[i] = factor*v + diff
+                            subset_dict[f].coords[tn].values[i] = factor * v + diff
             else:
                 raise AttributeError("Different units were found for time coord in each file. "
-                      "We were unable to normalize due to the units not being in '{unit} since ' format")
-        
+                                     "We were unable to normalize due to the units not being in '{unit} since ' format")
+
         return subset_dict
 
     def query_catalog(self,
@@ -1127,8 +1141,9 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
             path_regex = [re.compile(r'({})'.format(case_name))]
 
             for var in case_d.varlist.iter_vars():
-                date_range = var.T.range
-                
+                if not var.is_static:
+                    date_range = var.T.range
+
                 # define initial query dictionary with variable settings requirements that do not change if
                 # the variable is translated
                 case_d.set_query(var, path_regex)
@@ -1140,7 +1155,7 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
                 # search catalog for convention specific query object
                 var.log.info("Querying %s for variable %s for case %s.",
                              data_catalog,
-                             case_d.query['variable_id'],
+                             var.name,
                              case_name)
                 cat_subset = cat.search(**case_d.query)
                 if cat_subset.df.empty:
@@ -1179,9 +1194,25 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
                                 f"configuration file.")
                     else:
                         raise util.DataRequestError(
-                            f"Unable to find match or alternate for {case_d.query['variable_id']}"
+                            f"Unable to find match or alternate for {var.translation.name}"
                             f" for case {case_name} in {data_catalog}")
 
+                # if multiple entries exist, refine with variable_id
+                # this will solve issues where standard_id is not enough to uniquely ID a variable
+                # e.g. for catalogs with variables defined at individual levels
+                if len(set(cat_subset.df.variable_id)) > 1:
+                    var.log.info(f"Query for case {case_name} variable {var.name} in {data_catalog} returned multiple"
+                                 f"entries. Refining query using variable_id")
+                    if var.translation is not None:
+                        case_d.query.update({'variable_id': var.translation.name})
+                    else:
+                        case_d.query.update({'variable_id': var.name})
+                    cat_subset = cat.search(**case_d.query)
+                    if len(set(cat_subset.df.variable_id)) > 1:
+                        raise util.DataRequestError(
+                            f"Unable to find unique entry for {case_d.query['variable_id']}"
+                            f" for case {case_name} in {data_catalog}")
+                    case_d.query.pop('variable_id', None)
                 # Get files in specified date range
                 # https://intake-esm.readthedocs.io/en/stable/how-to/modify-catalog.html
                 if not var.is_static:
@@ -1215,8 +1246,8 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
 
                     for k in list(time_sort_dict):
                         cat_subset_dict[k] = self.crop_date_range(date_range,
-                                             cat_subset_dict[k],
-                                             var.T)
+                                                                  cat_subset_dict[k],
+                                                                  var.T)
                         if cat_subset_dict[k] is None:
                             continue
                         else:
@@ -1237,22 +1268,32 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
                         else:
                             var_xr = xr.concat([var_xr, cat_subset_dict.values[cat_index]], var.N.name)
                 var_xr = self.drop_attributes(var_xr)
+                # grab only the requested static variable
+                if var.is_static:
+                    del_list = []
+                    for vname in var_xr.variables:
+                        if vname != var.name:
+                            del_list.append(vname)
+                    for del_name in del_list:
+                        del var_xr[del_name]
                 # add standard_name to the variable xarray dataset if it is not defined
                 for vname in var_xr.variables:
                     if (not isinstance(var_xr.variables[vname], xr.IndexVariable)
                             and var_xr[vname].attrs.get('standard_name', None) is None):
                         case_query_standard_name = case_d.query.get('standard_name')
                         if isinstance(case_query_standard_name, list):
-                            new_standard_name = [name for name in case_query_standard_name if name == var.translation.standard_name][0]
+                            new_standard_name = \
+                            [name for name in case_query_standard_name if name == var.translation.standard_name][0]
                         else:
                             new_standard_name = case_query_standard_name
                         var_xr[vname].attrs['standard_name'] = new_standard_name
                         var_xr[vname].attrs['name'] = vname
+
+                var.log.info(f'Merging {var.name}')
                 if case_name not in cat_dict:
                     cat_dict[case_name] = var_xr
                 else:
                     cat_dict[case_name] = xr.merge([cat_dict[case_name], var_xr], compat='no_conflicts')
-
                 # check that the trimmed variable data in the merged dataset matches the desired date range
                 if not var.is_static:
                     try:
@@ -1292,7 +1333,6 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
                         xarray_ds = user_module.main(xarray_ds, v.name)
 
         return xarray_ds
-
 
     def setup(self, pod):
         """Method to do additional configuration immediately before :meth:`process`
@@ -1474,7 +1514,7 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
         ds.attrs['history'] = hist
         return ds
 
-    def write_dataset(self, var, ds):
+    def write_dataset(self, var: varlist_util.VarlistEntry, ds: xr.Dataset):
         """Writes processed Dataset *ds* to location specified by the
         ``dest_path`` attribute of *var*, using xarray `to_netcdf()
         <https://xarray.pydata.org/en/stable/generated/xarray.Dataset.to_netcdf.html>`__.
@@ -1483,23 +1523,46 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
         os.makedirs(os.path.dirname(var.dest_path), exist_ok=True)
         var_ds = ds[var.translation.name].to_dataset()
         var_ds = var_ds.rename_vars(name_dict={var.translation.name: var.name})
-        var.log.info("Writing '%s'.", var.dest_path, tags=util.ObjectLogTag.OUT_FILE)
         if var.is_static:
             unlimited_dims = []
         else:
             unlimited_dims = [var.T.name]
+        # append other grid types here as needed
+        irregular_grids = {'tripolar'}
+        if ds.attrs.get('grid', None) is not None:
+            # search for irregular grid types
+            for g in irregular_grids:
+                grid_search = re.compile(g, re.IGNORECASE)
+                grid_regex_result = grid_search.search(ds.attrs.get('grid'))
+                if grid_regex_result is not None:
+                    # add variables not included in xarray dataset if dims correspond to vertices and bounds
+                    append_vars =\
+                        (list(set([v for v in ds.variables
+                                   if 'vertices' in ds[v].dims
+                                   or 'bnds' in ds[v].dims]).difference([v for v in var_ds.variables])))
+                    for v in append_vars:
+                        v_dataset = ds[v].to_dataset()
+                        var_ds = xr.merge([var_ds, v_dataset])
+
+        # assign lat/lon coordinate standard_name if not defined or incorrect
+        for v in var_ds.variables:
+            if 'lat' in v.lower() and 'lat' not in var_ds[v].attrs['standard_name'].lower():
+                var_ds[v].attrs['standard_name'] = var.Y.standard_name
+            elif 'lon' in v.lower() and 'lon' not in var_ds[v].attrs['standard_name'].lower():
+                var_ds[v].attrs['standard_name'] = var.X.standard_name
 
         # The following block is retained for time comparison with dask delayed write procedure
-        #var_ds.to_netcdf(
+        # var_ds.to_netcdf(
         #    path=var.dest_path,
         #    mode='w',
         #    **self.save_dataset_kwargs,
         #    unlimited_dims=unlimited_dims
-        #)
-        #ds.close()
+        # )
+        # ds.close()
 
         # Uncomment the timing lines and log calls if desired
-        #start_time = time.monotonic()
+        # start_time = time.monotonic()
+        var.log.info("Writing '%s'.", var.dest_path, tags=util.ObjectLogTag.OUT_FILE)
         delayed_write = var_ds.to_netcdf(
             path=var.dest_path,
             mode='w',
@@ -1509,11 +1572,11 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
         )
         delayed_write.compute()
         delayed_write.close()
-        #end_time = time.monotonic()
-        #var.log.info(f'Time to write file {var.dest_path}: {str(datetime.timedelta(seconds=end_time - start_time))}')
-        #dt = datetime.timedelta(seconds=end_time - start_time)
-        #write_times.append(dt.total_seconds())
-        #var.log.info(f'Total write time: {str(sum(write_times))} s')
+        # end_time = time.monotonic()
+        # var.log.info(f'Time to write file {var.dest_path}: {str(datetime.timedelta(seconds=end_time - start_time))}')
+        # dt = datetime.timedelta(seconds=end_time - start_time)
+        # write_times.append(dt.total_seconds())
+        # var.log.info(f'Total write time: {str(sum(write_times))} s')
 
     def write_ds(self, case_list: dict,
                  catalog_subset: collections.OrderedDict,
@@ -1539,6 +1602,7 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
                 except Exception as exc:
                     raise util.chain_exc(exc, f"writing data for {var.full_name}.",
                                          util.DataPreprocessEvent)
+
 
             # del ds  # shouldn't be necessary
 
@@ -1588,7 +1652,8 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
                 # todo: maybe skip this if no standard_name attribute for v in case_xr_dataset
                 v.log.info(f'Calling parse_ds for {v.name}')
                 var_xr_dataset = self.parse_ds(v, case_xr_dataset)
-                varlist_ex = [v_l.translation.name for v_l in case_list[case_name].varlist.iter_vars()]
+                varlist_ex = [v_l.translation.name for v_l in case_list[case_name].varlist.iter_vars()
+                              if v_l.translation is not None]
                 if tv_name in varlist_ex:
                     varlist_ex.remove(tv_name)
                 for v_d in var_xr_dataset.variables:
@@ -1635,11 +1700,15 @@ class MDTFPreprocessorBase(metaclass=util.MDTFABCMeta):
 
                 d.update({'project_id': var.translation.convention})
                 d.update({'path': var.dest_path})
-                d.update({'time_range': f'{util.cftime_to_str(ds_match.time.values[0]).replace('-',':')}-'
-                                        f'{util.cftime_to_str(ds_match.time.values[-1]).replace('-',':')}'})
+                d.update({'time_range': f'{util.cftime_to_str(ds_match.time.values[0]).replace('-', ':')}-'
+                                        f'{util.cftime_to_str(ds_match.time.values[-1]).replace('-', ':')}'})
                 d.update({'standard_name': ds_match[var.name].attrs['standard_name']})
+                d.update({'variable_id': var_name})
+                if 'frequency' in ds_match[var.name].attrs:
+                    d.update({'frequency': ds_match[var.name].attrs['frequency']})
+                elif not var.is_static:
+                    d.update({'frequency': var.T.frequency.unit})
                 cat_entries.append(d)
-
         # create a Pandas dataframe from the catalog entries
 
         cat_df = pd.DataFrame(cat_entries)

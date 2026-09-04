@@ -60,8 +60,9 @@ class PathManagerBase:
                     self.OUTPUT_DIR = os.path.join(self._init_path('OUTPUT_DIR', config, env=env))
 
             if new_work_dir:
+                output_dir_main = os.path.abspath(os.path.join(self.OUTPUT_DIR, ".."))
                 self.WORK_DIR, ver = filesystem.bump_version(
-                    self.WORK_DIR, extra_dirs=[self.OUTPUT_DIR])
+                    self.WORK_DIR, extra_dirs=[output_dir_main])
                 self.OUTPUT_DIR, _ = filesystem.bump_version(self.OUTPUT_DIR, new_v=ver)
 
             # set root directory for TempDirManager
@@ -100,8 +101,11 @@ class PodPathManager(PathManagerBase):
                  new_work_dir: bool = True):
 
         super().__init__(config, env, unittest, new_work_dir)
-
+        
         self.POD_CODE_DIR = os.path.join(self.CODE_ROOT, 'diagnostics', pod_name)
+        if not os.path.exists(self.POD_CODE_DIR):
+            self.POD_CODE_DIR = os.path.join(self.CODE_ROOT, 'diagnostics', 'mar',  pod_name)
+            
         self.POD_WORK_DIR = os.path.join(self.WORK_DIR, pod_name)
         self.POD_OUTPUT_DIR = os.path.join(self.OUTPUT_DIR, pod_name)
         if any(self.OBS_DATA_ROOT):

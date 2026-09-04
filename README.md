@@ -22,16 +22,16 @@ and a link to the full documentation for each currently-supported POD.
 | Diagnostic                                                                                                                                                                                             | Contributor                                                                                        |
 |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------|                                      
 | [Blocking Neale](https://github.com/NOAA-GFDL/MDTF-diagnostics/blob/main/diagnostics/blocking_neale/doc/blocking_neale.rst)                                                                            | Rich Neale (NCAR), Dani Coleman (NCAR)                                                             |
-| [Convective Transition Diagnostics](https://www.cgd.ucar.edu/cms/bundy/Projects/diagnostics/mdtf/mdtf_figures/MDTF_QBOi.EXP1.AMIP.001.save/convective_transition_diag/convective_transition_diag.html) | J. David Neelin (UCLA)                                                                             |
-| [Diurnal Cycle of Precipitation](https://www.cgd.ucar.edu/cms/bundy/Projects/diagnostics/mdtf/mdtf_figures/MDTF_QBOi.EXP1.AMIP.001.save/precip_diurnal_cycle/precip_diurnal_cycle.html)                | Rich Neale (NCAR)                                                                                  |
+| [Convective Transition Diagnostics](https://project.cgd.ucar.edu/projects/MDTF/mdtf_figures/MDTF_QBOi.EXP1.AMIP.001.save/convective_transition_diag/convective_transition_diag.html) | J. David Neelin (UCLA)                                                                             |
+| [Diurnal Cycle of Precipitation](https://project.cgd.ucar.edu/projects/MDTF/mdtf_figures/MDTF_QBOi.EXP1.AMIP.001.save/precip_diurnal_cycle/precip_diurnal_cycle.html)                | Rich Neale (NCAR)                                                                                  |
 | [Eulerian Storm Track](https://github.com/NOAA-GFDL/MDTF-diagnostics/blob/main/diagnostics/eulerian_storm_track/doc/eulerian_storm_track.rst)                                                          | James Booth (CUNY), Jeyavinoth Jeyaratnam                                                          |
-| [Extratropical Variance (EOF 500hPa Height)](https://www.cgd.ucar.edu/cms/bundy/Projects/diagnostics/mdtf/mdtf_figures/MDTF_QBOi.EXP1.AMIP.001.save/EOF_500hPa/EOF_500hPa.html)                        | CESM/AMWG (NCAR)                                                                                   |
+| [Extratropical Variance (EOF 500hPa Height)](https://project.cgd.ucar.edu/projects/MDTF/mdtf_figures/MDTF_QBOi.EXP1.AMIP.001.save/EOF_500hPa/EOF_500hPa.html)                        | CESM/AMWG (NCAR)                                                                                   |
 | [Forcing Feedback Diagnostic](https://github.com/NOAA-GFDL/MDTF-diagnostics/blob/main/diagnostics/forcing_feedback/doc/forcing_feedback.rst)                                                           | Brian Soden (U. Miami), Ryan Kramer                                                                |
 | [Mean Dynamic Sea Level Package](https://github.com/wrongkindofdoctor/MDTF-diagnostics/blob/main/diagnostics/MDSL/doc/MDSL.rst)                                             | C.Little (AER, Inc.), N. Etige, S. Vannah, M. Zhao                                                 |
 | [Mixed Layer Depth](https://github.com/NOAA-GFDL/MDTF-diagnostics/blob/main/diagnostics/mixed_layer_depth/doc/mixed_layer_depth.rst)                                                                   | Cecilia Bitz (U. Washington), Lettie Roach                                                         |
-| [MJO Propagation and Amplitude ](https://www.cgd.ucar.edu/cms/bundy/Projects/diagnostics/mdtf/mdtf_figures/MDTF_GFDL.CM4.c96L32.am4g10r8/MJO_prop_amp/MJO_prop_amp.html)                               | Xianan Jiang (UCLA)                                                                                |
-| [MJO Spectra and Phasing](https://www.cgd.ucar.edu/cms/bundy/Projects/diagnostics/mdtf/mdtf_figures/MDTF_QBOi.EXP1.AMIP.001.save/MJO_suite/MJO_suite.html)                                             | CESM/AMWG (NCAR)                                                                                   |
-| [MJO Teleconnections](https://www.cgd.ucar.edu/cms/bundy/Projects/diagnostics/mdtf/mdtf_figures/MDTF_QBOi.EXP1.AMIP.001.save/MJO_teleconnection/MJO_teleconnection.html)                               | Eric Maloney (CSU)                                                                                 |
+| [MJO Propagation and Amplitude ](https://project.cgd.ucar.edu/projects/MDTF/mdtf_figures/MDTF_GFDL.CM4.c96L32.am4g10r8/MJO_prop_amp/MJO_prop_amp.html)                               | Xianan Jiang (UCLA)                                                                                |
+| [MJO Spectra and Phasing](https://project.cgd.ucar.edu/projects/MDTF/mdtf_figures/MDTF_QBOi.EXP1.AMIP.001.save/MJO_suite/MJO_suite.html)                                             | CESM/AMWG (NCAR)                                                                                   |
+| [MJO Teleconnections](https://project.cgd.ucar.edu/projects/MDTF/mdtf_figures/MDTF_QBOi.EXP1.AMIP.001.save/MJO_teleconnection/MJO_teleconnection.html)                               | Eric Maloney (CSU)                                                                                 |
 | [Moist Static Energy Diagnostic Package](https://github.com/NOAA-GFDL/MDTF-diagnostics/blob/main/diagnostics/ENSO_MSE/doc/ENSO_MSE.rst)                                                                | H. Annamalai (U. Hawaii), Jan Hafner (U. Hawaii)                                      |
 | [Ocean Surface Flux Diagnostic](https://github.com/NOAA-GFDL/MDTF-diagnostics/blob/main/diagnostics/ocn_surf_flux_diag/doc/ocn_surf_flux_diag.rst)                                                     | Charlotte A. DeMott (Colorado State University), Chia-Weh Hsu (GFDL)                               |
 | [Precipitation Buoyancy Diagnostic](https://github.com/NOAA-GFDL/MDTF-diagnostics/blob/main/diagnostics/precip_buoy_diag/doc/precip_buoy_diag.rst)                                                     | J. David Neelin (UCLA), Fiaz Ahmed                                                                 |
@@ -50,7 +50,8 @@ and a link to the full documentation for each currently-supported POD.
 | [Top Heaviness Metric](https://github.com/NOAA-GFDL/MDTF-diagnostics/blob/main/diagnostics/top_heaviness_metric/doc/top_heaviness_metric.rst)                                                          | Zhuo Wang (U.Illinois Urbana-Champaign), Jiacheng Ye (U.Illinois Urbana-Champaign)                 |
 | [Tropical Cyclone Rain Rate Azimuthal Average](https://github.com/NOAA-GFDL/MDTF-diagnostics/blob/main/diagnostics/TC_Rain/doc/TC_Rain.rst)                                                            | Daehyun Kim (U. Washington), Nelly Emlaw (U.Washington)                                            |
 | [Tropical Pacific Sea Level](https://github.com/NOAA-GFDL/MDTF-diagnostics/blob/main/diagnostics/tropical_pacific_sea_level/doc/tropical_pacific_sea_level.rst)                                        | Jianjun Yin (U. Arizona), Chia-Weh Hsu (GFDL)                                                      |
-| [Wavenumber-Frequency Spectra](https://www.cgd.ucar.edu/cms/bundy/Projects/diagnostics/mdtf/mdtf_figures/MDTF_QBOi.EXP1.AMIP.001.save/Wheeler_Kiladis/Wheeler_Kiladis.html)                            | CESM/AMWG (NCAR)                                                                                   |
+| [Wavenumber-Frequency Spectra](https://project.cgd.ucar.edu/projects/MDTF/mdtf_figures/MDTF_QBOi.EXP1.AMIP.001.save/Wheeler_Kiladis/Wheeler_Kiladis.html)                            | CESM/AMWG (NCAR)                                                                                   |
+| [Western Boundary Current](https://github.com/NOAA-GFDL/MDTF-diagnostics/blob/main/diagnostics/WBC_var/doc/WBC_var.rst)                                                                                | Jongsoo Shin (WHOI), Young-Oh Kwon (WHOI), Lilli Enders (WHOI)         
 
 ## Example POD Analysis Results
 
@@ -116,16 +117,17 @@ for, the Windows Subsystem for Linux.
 
 ## 2. Download the sample data
 
-Supporting observational data and sample model data are available via anonymous FTP at [ftp://ftp.cgd.ucar.edu/archive/mdtf](ftp://ftp.cgd.ucar.edu/archive/mdtf).
-- Digested observational data: run ` wget ftp://ftp.cgd.ucar.edu/archive/mdtf/obs_data_latest/\*` or download the
-  collection "NCAR CGD Anon" from [Globus](https://www.globus.org/)
-- NCAR-CESM-CAM sample data (12.3 Gb): model.QBOi.EXP1.AMIP.001.tar 
-  (ftp://ftp.cgd.ucar.edu/archive/mdtf/model.QBOi.EXP1.AMIP.001.tar)
+Supporting observational data and sample model data are available via 
+Globus.
+-  [Digested observational data](https://app.globus.org/file-manager?origin_id=87726236-cbdd-4a91-a904-7cc1c47f8912)
 - NOAA-GFDL-CM4 sample data (4.8 Gb): model.GFDL.CM4.c96L32.am4g10r8.tar
   (ftp://ftp.cgd.ucar.edu/archive/mdtf/model.GFDL.CM4.c96L32.am4g10r8.tar)
+- [CESM2-CAM6 Coupled model timeslice data, individual files]
+  (https://app.globus.org/file-manager?origin_id=200c3a02-0c49-4e3c-ad24-4a24db9b1c2d&origin_path=%2F)
+- [CESM2-CAM4 Atmosphere timeslice data (QBOi case) tar or individual files] 
+  (https://app.globus.org/file-manager?origin_id=52f097f5-b6ba-4cbb-8c10-8e17fa2b9bf4&origin_path=%2F)
 
-Note that the above paths are symlinks to the most recent versions of the data and will be reported as zero bytes in an FTP client.
-
+For tar files tranfered over ftp, please note that the above paths are symlinks to the most recent versions of the data and will be reported as zero bytes in an FTP client.
 Running `tar -xvf [filename].tar` will extract the contents in the following hierarchy under the `mdtf` directory:
 
 ```

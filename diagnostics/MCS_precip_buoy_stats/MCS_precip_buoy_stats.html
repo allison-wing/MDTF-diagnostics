@@ -1,0 +1,92 @@
+<title>MDTF example-multicase diagnostic</title>
+<img src="../mdtf_diag_banner.png" alt="MDTF Diagnostic Banner">
+<h3>MCS Precipitation and Buoyancy Diagnostic</h3>
+
+<p>
+  This POD provides diagnostics of tropical mesoscale convective systems (MCSs) and their thermodynamic environments,
+  informed by an empirical buoyancy measure (<em>B</em><sub>L</sub>). Specifically, these diagnostics are designed to evaluate model
+  performance in representing the fundamental spatial-temporal characteristics of tropical MCSs, as well as the associated precipitation responses to buoyancy under both MCS and non-MCS conditions. The diagnostics include:
+</p>
+<ul>
+  <li>Tropical-mean precipitation.</li>
+  <li>MCS frequency and its contribution to total precipitation.</li>
+  <li>Sensitivity of precipitation to individual buoyancy components, evaluated separately for MCS and non-MCS conditions.</li>
+</ul>
+
+<p>
+  Unlike traditional parcel-based buoyancy, the <em>B</em><sub>L</sub> measure incorporates vertical thermodynamic
+  structure and deep-inflow, mass-flux–driven entrainment processes in the lower troposphere.
+</p>
+
+<p>
+  Tropical MCSs are identified using outgoing longwave radiative flux and precipitation, following similar
+  definitions implemented in <a href="https://github.com/FlexTRKR/PyFLEXTRKR">PyFLEXTRKR</a>.
+  Instead of tracking clouds continuously in time, the default cloud identification method is “snapshot-based.” Users may alternatively provide pre-identified MCS masks to bypass the identification step and proceed directly with the remaining MCS diagnostics.
+</p>
+
+<p><strong>About the POD:</strong></p>
+<ul>
+  <li>
+    A minimum of one year of data at 3-hourly temporal resolution is recommended to ensure a sufficient sample size of tropical MCSs.
+  </li>
+  <li>
+    This POD is designed for models with relatively high horizontal resolution (≤ 0.5°). Conservative regridding is applied by default to ensure consistent comparisons between model outputs and the observational reference (GPM-IMERG + ERA5).
+  </li>
+  <li>
+    Detailed descriptions of the POD are documented in <code>diagnostics/MCS_precip_buoy_stats/doc/MCS_precip_buoy_stats.rst</code>.
+  </li>
+</ul>
+
+<p><strong>Results of diagnostics:</strong></p>
+
+<table border="0" cellpadding="5" cellspacing="0">
+  <tr>
+    <th align="left" style="color:navy;">Temporally-Averaged Precipitation Intensity (mm/day) Over the Analysis Period &nbsp;&nbsp;&nbsp;</th>
+    <th align="left">Model Results</th>
+  </tr>
+  <tr>
+    <td align="left">Mean precipitation rate (shading).</td>
+    <td align="center">
+      <a href="./fig/precipitation_climate.MODvsOBS.png">plot</a>
+    </td>
+  </tr>
+</table>
+<br>
+
+<table border="0" cellpadding="5" cellspacing="0">
+  <tr>
+    <th align="left" style="color:navy;">Tropical MCS Frequency and Precipitation Contribution</th>
+    <th align="left">Model Results</th>
+  </tr>
+  <tr>
+    <td align="left">
+      Tropical MCS frequency (contours) and the contribution of MCSs to total precipitation (shading).<br>
+      MCS frequency is defined as the number of time steps with MCS occurrences normalized by the total number of time steps over the analysis period.
+    </td>
+    <td align="center">
+      <a href="./fig/precipitation_MCScontribution.MODvsOBS.png">plot</a>
+    </td>
+  </tr>
+</table>
+<br>
+
+<table border="0" cellpadding="5" cellspacing="0">
+  <tr>
+    <th align="left" style="color:navy;">Sensitivity of Precipitation to Buoyancy Components, MCS vs. Non-MCS</th>
+    <th align="left">Model Results (Ocean)&nbsp;&nbsp;&nbsp;</th>
+    <th align="left">Model Results (Land)</th>  
+  </tr>
+  <tr>
+    <td align="left">
+      Conditionally-averaged precipitation rate binned by <em>B</em><sub>L,cape</sub> and <em>B</em><sub>L,subsat</sub>.<br>
+      White contours indicate the joint probability (10<sup>x</sup>, where x = -4, -3, -2). Bin cells with fewer than 50 samples are masked out.<br>
+      The bin width is 0.5 K for both axes. The slanted dashed lines indicate <em>B</em><sub>L</sub> = 0, -2.5, and -5 K.
+    </td>
+    <td align="center">
+      <a href="./fig/BLprecip_capesubsat_merged.ocean.png">plot</a>
+    </td>
+    <td align="center">
+      <a href="./fig/BLprecip_capesubsat_merged.land.png">plot</a>
+    </td>
+  </tr>
+</table>

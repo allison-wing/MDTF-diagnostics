@@ -135,6 +135,12 @@
       "units": "N m-2",
       "ndim": 3
     },
+    "tos": {
+      "standard_name": "sea_surface_temperature",
+      "realm": "ocean",
+      "units": "degC",
+      "ndim": 3
+    },
     "alb_sfc": {
       "standard_name": "",
       "long_name":"surface albedo",
@@ -766,6 +772,12 @@
       "realm": "atmos",
       "units": "kg m-2 s-1",
       "ndim": 3
+    },
+    "sftlf": {
+      "standard_name": "land_area_fraction",
+      "long_name": "Land Area Fraction",
+      "units": "%",
+      "ndim": 2
     }
   },
   "env_vars" : {
