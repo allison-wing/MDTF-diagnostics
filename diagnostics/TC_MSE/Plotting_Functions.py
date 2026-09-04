@@ -586,7 +586,7 @@ def AzmeanPlotting():
 
     # Final plot adjustments
     plt.suptitle('Multi-Bin Azimuthal Mean of Feedback Terms', fontweight='bold', fontsize=30)
-    plt.savefig(os.environ['WK_DIR'] + '/Multibin_Azmean_Plots.pdf')
+    plt.savefig(os.environ['WORK_DIR'] + '/Multibin_Azmean_Plots.pdf')
     plt.close()
 
 
@@ -722,7 +722,7 @@ def BoxAvLinePlotting():
     # Final plot adjustments
     plt.suptitle('Box Average of Bin Composite for Feedback Terms', fontweight='bold', fontsize=40)
     plt.subplots_adjust(hspace=0.35, wspace=0.3)
-    plt.savefig(os.environ['WK_DIR'] + '/Box_Average_Plots.pdf')
+    plt.savefig(os.environ['WORK_DIR'] + '/Box_Average_Plots.pdf')
     plt.close()
 
     # Now do the normalized version
@@ -845,7 +845,7 @@ def BoxAvLinePlotting():
     # Final plot adjustments
     plt.suptitle('Normalized Box Average of Bin Composites for Feedback Terms', fontweight='bold', fontsize=40)
     plt.subplots_adjust(hspace=0.35, wspace=0.3)
-    plt.savefig(os.environ['WK_DIR'] + '/Normalized_Box_Average_Plots.pdf')
+    plt.savefig(os.environ['WORK_DIR'] + '/Normalized_Box_Average_Plots.pdf')
     plt.close()
 
 
