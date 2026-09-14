@@ -204,6 +204,24 @@
       "units": "m s-1",
       "ndim": 3
     },
+    "PRECL": {
+      "standard_name": "large_scale_precipitation_rate",
+      "realm": "atmos",
+      "units": "m s-1",
+      "ndim": 3
+    },
+    "PRECSC": {
+      "standard_name": "convective_snowfall_rate",
+      "realm": "atmos",
+      "units": "m s-1",
+      "ndim": 3
+    },
+    "PRECSL": {
+      "standard_name": "large_scale_snowfall_rate",
+      "realm": "atmos",
+      "units": "m s-1",
+      "ndim": 3
+    },
     "TREFHT" : {
       // correct name? CMIP6 equivalent should be tas, temp at 2m ref height
       "standard_name": "air_temperature",
