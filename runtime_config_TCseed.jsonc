@@ -36,7 +36,7 @@
   // "$" and will be expended to their current values when the framework runs.
   // Full or relative path to model data ESM-intake catalog header file
 
-  "DATA_CATALOG": "./catalogs/CESM.MDTFv3_catalog.csv",
+  "DATA_CATALOG": "/home/awing/mdtf/MDTF-diagnostics/catalogs/CESM-MDTFv3_catalog.csv",
 
   // Parent directory containing observational data used by individual PODs.
   "OBS_DATA_ROOT": "/huracan/tank4/cornell/GCM/mdtf/inputdata/obs_data",

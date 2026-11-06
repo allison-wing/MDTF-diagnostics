@@ -73,7 +73,7 @@
         "units": "m s-1",
         "frequency": "6hr",
         "dimensions": ["time","lat","lon"]
-      },
+      }
     }
   }
   
