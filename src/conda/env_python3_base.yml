@@ -40,6 +40,7 @@ dependencies:
 - gfortran=11.3.0
 - momlevel=1.0.1
 - setuptools<82.0.0
+- scikit-image #need for TCseed PO
 - pip=23.3.1
 - pip:
     - numpy==1.26.4
