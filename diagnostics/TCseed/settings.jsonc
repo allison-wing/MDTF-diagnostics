@@ -8,7 +8,7 @@
       // Name of the driver script. This should be a single script, taking no
       // command-line arguments, which runs the entire analysis (calling any other
       // scripts or subroutines as needed.)
-      "driver" : "TC_MSE_notebook.ipynb",
+      "driver" : "TCseed_notebook.ipynb",
   
       // Human-readable name of the diagnostic. May contain spaces.
       "long_name" : "TC seed diagnostic",
