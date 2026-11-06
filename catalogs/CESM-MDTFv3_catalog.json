@@ -117,5 +117,5 @@
   "description": null,
   "title": null,
   "last_updated": "2026-09-14T16:27:54Z",
-  "catalog_file": "file:///home/awing/mdtf/MDTF-diagnostics/catalogs/CESM-MDTFv3_catalog.csv"
+  "catalog_file": "/home/awing/mdtf/MDTF-diagnostics/catalogs/CESM-MDTFv3_catalog.csv"
 }

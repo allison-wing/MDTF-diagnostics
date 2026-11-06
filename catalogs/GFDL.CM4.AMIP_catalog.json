@@ -117,5 +117,5 @@
   "description": null,
   "title": null,
   "last_updated": "2026-09-04T14:05:08Z",
-  "catalog_file": "file:///home/awing/mdtf/MDTF-diagnostics/catalogs/GFDL.CM4.AMIP_catalog.csv"
+  "catalog_file": "/home/awing/mdtf/MDTF-diagnostics/catalogs/GFDL.CM4.AMIP_catalog.csv"
 }
