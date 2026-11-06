@@ -2,6 +2,13 @@ import numpy as np
 from skimage.measure import regionprops_table
 from scipy.ndimage import label, center_of_mass
 
+# Compatibility wrapper for numpy.trapezoid (added in NumPy 2.0)
+# Older versions use numpy.trapz instead
+if hasattr(np, 'trapezoid'):
+    trapezoid_func = np.trapezoid
+else:
+    trapezoid_func = np.trapz
+
 #The following routines compute the theoretical and observed Besag's L-functions given a 2D binary field of convective/non-convective points and provide the cloud-to-cloud nearest-neighbor distances for the computation of L_org/dL_org and I_org/RI_org.
 #Input and output parameters of the main routine _compute_organization_indices:
 
@@ -318,11 +325,11 @@ def _compute_indices(ncnv, NNdist, Besag_obs, Besag_theor, bins, domain_x, domai
     NNCDF_obs = np.cumsum(NNPDF)
 
     #Integration of the joint CDFs to give I_org/RI_org
-    I_org = np.trapezoid(NNCDF_obs, x=NNCDF_theor)
-    RI_org = np.trapezoid(NNCDF_obs - NNCDF_theor, x=NNCDF_theor)
+    I_org = trapezoid_func(NNCDF_obs, x=NNCDF_theor)
+    RI_org = trapezoid_func(NNCDF_obs - NNCDF_theor, x=NNCDF_theor)
     
     #Computation of L_org
-    L_org = np.trapezoid(Besag_obs - Besag_theor, x=bins) / rmax
+    L_org = trapezoid_func(Besag_obs - Besag_theor, x=bins) / rmax
     
     return I_org, RI_org, L_org, NNCDF_theor, NNCDF_obs
 

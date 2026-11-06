@@ -34,8 +34,8 @@ def _add_labels(fig, axes, cbar_1, cbar_2, cbar_3, suptitle):
                  fontsize=16, fontweight='bold')
 
 
-def Spatial_Map_Obs(Dev_Means, Non_Dev_Means, Percentile, suptitle='Observations'):
-    """3x3 panel plot for the observations"""
+def Spatial_Map_Obs(Dev_Means, Non_Dev_Means, Percentile, suptitle='ERA5'):
+    """3x3 panel plot for the observations (ERA5)"""
     fig, axes = plt.subplots(3, 3, figsize=(10, 10))
     tick_locations = [0, 10, 20, 30, 40]
 
