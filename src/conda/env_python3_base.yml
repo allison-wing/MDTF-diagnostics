@@ -11,7 +11,7 @@ dependencies:
 - netCDF4=1.6.5
 - cftime=1.6.2
 - xarray=2025.1.2
-- matplotlib=3.8.2
+- matplotlib>=3.9
 - pandas=2.2.2
 - cartopy=0.22.0
 - cython=3.0.2
